@@ -12,6 +12,13 @@ class Video(models.Model):
 
     class Meta:
         ordering = ['-published_at']
+        indexes = [
+            # Composite index for ordering and filtering
+            models.Index(fields=['-published_at'], name='video_published_desc_idx'),
+            # For search functionality
+            models.Index(fields=['title'], name='video_title_idx'),
+            models.Index(fields=['channel_title'], name='video_channel_title_idx'),
+        ]
     
     def __str__(self):
         return self.title
