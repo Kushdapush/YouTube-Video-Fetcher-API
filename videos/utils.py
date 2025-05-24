@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from django.conf import settings
 from .models import APIKey
 import logging
@@ -24,7 +24,7 @@ def fetch_videos_from_youtube(search_query, published_after=None):
         api_key = get_next_api_key()
         if not published_after:
             # Default to searching videos published in the last day
-            published_after = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+            published_after = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime('%Y-%m-%dT%H:%M:%SZ')
         
         url = "https://www.googleapis.com/youtube/v3/search"
         params = {
@@ -34,7 +34,7 @@ def fetch_videos_from_youtube(search_query, published_after=None):
             'order': 'date',
             'publishedAfter': published_after,
             'key': api_key,
-            'maxResults': 25  # Maximum allowed by YouTube API
+            'maxResults': 25
         }
         
         response = requests.get(url, params=params)
