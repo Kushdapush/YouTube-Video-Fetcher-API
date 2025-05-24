@@ -34,7 +34,7 @@ def fetch_videos_from_youtube(search_query, published_after=None):
             'order': 'date',
             'publishedAfter': published_after,
             'key': api_key,
-            'maxResults': 50  # Maximum allowed by YouTube API
+            'maxResults': 25  # Maximum allowed by YouTube API
         }
         
         response = requests.get(url, params=params)
@@ -62,7 +62,7 @@ def fetch_videos_from_youtube(search_query, published_after=None):
                 
             # Check if it's specifically a quota exceeded error
             if "quotaExceeded" in response.text or error_reason == "quotaExceeded":
-                logger.warning(f"API key quota exceeded for key: {api_key[:5]}...")
+                logger.warning(f"API key quota exceeded for key: {api_key[-5:]}...")
                 api_key_obj = APIKey.objects.get(key=api_key)
                 api_key_obj.quota_exceeded = True
                 api_key_obj.save()
